@@ -1,78 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Buntys Bank - Login / Register</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-body{margin:0;font-family:"Poppins",sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;background:url('https://images.unsplash.com/photo-1581091215364-6ee84e47ee8a?auto=format&fit=crop&w=1470&q=80') center/cover no-repeat;}
-.card{background:rgba(0,0,0,0.7);padding:30px;border-radius:16px;width:320px;color:#fff;text-align:center;}
-h2{margin-bottom:20px;}
-input,button{width:100%;padding:12px;margin:8px 0;border-radius:10px;border:none;outline:none;}
-button{background:#00e5ff;font-weight:600;cursor:pointer;}
-button:hover{background:#00bcd4;color:#fff;}
-.toggleForm{background:none;border:none;color:#00e5ff;cursor:pointer;text-decoration:underline;}
-</style>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Buntys Bank - Login / Register</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        margin: 0;
+        font-family: "Poppins", sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: url("https://images.unsplash.com/photo-1581091215364-6ee84e47ee8a?auto=format&fit=crop&w=1470&q=80")
+          center/cover no-repeat;
+      }
+      .card {
+        background: rgba(0, 0, 0, 0.7);
+        padding: 30px;
+        border-radius: 16px;
+        width: 320px;
+        color: #fff;
+        text-align: center;
+      }
+      h2 {
+        margin-bottom: 20px;
+      }
+      input,
+      button {
+        width: 100%;
+        padding: 12px;
+        margin: 8px 0;
+        border-radius: 10px;
+        border: none;
+        outline: none;
+      }
+      button {
+        background: #00e5ff;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #00bcd4;
+        color: #fff;
+      }
+      .toggleForm {
+        background: none;
+        border: none;
+        color: #00e5ff;
+        cursor: pointer;
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card" id="loginCard">
+      <h2>Login</h2>
+      <input type="text" id="lphone" placeholder="Phone Number" />
+      <input
+        type="password"
+        id="lpin"
+        placeholder="4-digit PIN"
+        maxlength="4"
+      />
+      <button onclick="login()">Login</button>
+      <p>
+        Don’t have an account?
+        <button class="toggleForm" onclick="showRegister()">
+          Create Account
+        </button>
+      </p>
+    </div>
 
-<div class="card" id="loginCard">
-  <h2>Login</h2>
-  <input type="text" id="lphone" placeholder="Phone Number">
-  <input type="password" id="lpin" placeholder="4-digit PIN" maxlength="4">
-  <button onclick="login()">Login</button>
-  <p>Don’t have an account?
-    <button class="toggleForm" onclick="showRegister()">Create Account</button>
-  </p>
-</div>
+    <div class="card" id="registerCard" style="display: none">
+      <h2>Create Account</h2>
+      <input type="text" id="rname" placeholder="Name" />
+      <input type="text" id="rphone" placeholder="Phone Number" />
+      <input
+        type="password"
+        id="rpin"
+        placeholder="4-digit PIN"
+        maxlength="4"
+      />
+      <button onclick="createAccount()">Create Account</button>
+      <p>
+        Already have an account?
+        <button class="toggleForm" onclick="showLogin()">Login</button>
+      </p>
+    </div>
 
-<div class="card" id="registerCard" style="display:none;">
-  <h2>Create Account</h2>
-  <input type="text" id="rname" placeholder="Name">
-  <input type="text" id="rphone" placeholder="Phone Number">
-  <input type="password" id="rpin" placeholder="4-digit PIN" maxlength="4">
-  <button onclick="createAccount()">Create Account</button>
-  <p>Already have an account?
-    <button class="toggleForm" onclick="showLogin()">Login</button>
-  </p>
-</div>
+    <script>
+      let users = JSON.parse(localStorage.getItem("users")) || [];
 
-<script>
-let users = JSON.parse(localStorage.getItem("users")) || [];
+      const loginCard = document.getElementById("loginCard");
+      const registerCard = document.getElementById("registerCard");
 
-const loginCard = document.getElementById("loginCard");
-const registerCard = document.getElementById("registerCard");
+      function showRegister() {
+        loginCard.style.display = "none";
+        registerCard.style.display = "block";
+      }
+      function showLogin() {
+        registerCard.style.display = "none";
+        loginCard.style.display = "block";
+      }
 
-function showRegister(){ loginCard.style.display="none"; registerCard.style.display="block"; }
-function showLogin(){ registerCard.style.display="none"; loginCard.style.display="block"; }
+      function saveUsers() {
+        localStorage.setItem("users", JSON.stringify(users));
+      }
+      function isValidPin(pin) {
+        return /^\d{4}$/.test(pin);
+      }
 
-function saveUsers(){ localStorage.setItem("users", JSON.stringify(users)); }
-function isValidPin(pin){ return /^\d{4}$/.test(pin); }
+      function createAccount() {
+        const name = document.getElementById("rname").value.trim();
+        const phone = document.getElementById("rphone").value.trim();
+        const pin = document.getElementById("rpin").value.trim();
+        if (!name || !phone || !pin) {
+          alert("Fill all fields");
+          return;
+        }
+        if (!isValidPin(pin)) {
+          alert("PIN must be 4 digits");
+          return;
+        }
+        if (users.some((u) => u.phone === phone)) {
+          alert("Phone already registered");
+          return;
+        }
+        users.push({ name, phone, pin, balance: 0, history: [] });
+        saveUsers();
+        alert("Account created! Please login.");
+        document.getElementById("rname").value =
+          document.getElementById("rphone").value =
+          document.getElementById("rpin").value =
+            "";
+        showLogin();
+      }
 
-function createAccount(){
-  const name = document.getElementById("rname").value.trim();
-  const phone = document.getElementById("rphone").value.trim();
-  const pin = document.getElementById("rpin").value.trim();
-  if(!name||!phone||!pin){ alert("Fill all fields"); return; }
-  if(!isValidPin(pin)){ alert("PIN must be 4 digits"); return; }
-  if(users.some(u=>u.phone===phone)){ alert("Phone already registered"); return; }
-  users.push({name,phone,pin,balance:0,history:[]});
-  saveUsers();
-  alert("Account created! Please login.");
-  document.getElementById("rname").value=document.getElementById("rphone").value=document.getElementById("rpin").value="";
-  showLogin();
-}
-
-function login(){
-  const phone = document.getElementById("lphone").value.trim();
-  const pin = document.getElementById("lpin").value.trim();
-  const currentUser = users.find(u=>u.phone===phone && u.pin===pin);
-  if(!currentUser){ alert("Invalid phone or PIN"); return; }
-  localStorage.setItem("currentUser", JSON.stringify(currentUser));
-  window.location.href = "dashboard.html";
-}
-</script>
-
-</body>
+      function login() {
+        const phone = document.getElementById("lphone").value.trim();
+        const pin = document.getElementById("lpin").value.trim();
+        const currentUser = users.find(
+          (u) => u.phone === phone && u.pin === pin
+        );
+        if (!currentUser) {
+          alert("Invalid phone or PIN");
+          return;
+        }
+        localStorage.setItem("currentUser", JSON.stringify(currentUser));
+        window.location.href = "dashboard.html";
+      }
+    </script>
+  </body>
 </html>

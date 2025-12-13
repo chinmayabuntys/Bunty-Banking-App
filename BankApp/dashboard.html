@@ -1,216 +1,397 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Buntys Bank - Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-*{box-sizing:border-box;font-family:Poppins,sans-serif;margin:0;padding:0;}
-body{min-height:100vh;transition:0.3s;overflow-x:hidden;}
-body.dark{color:#fff;}
-body.light{color:#000;}
-body::before{content:"";position:fixed;inset:0;background:url("https://images.unsplash.com/photo-1581091215364-6ee84e47ee8a?auto=format&fit=crop&w=1470&q=80") center/cover no-repeat;filter:blur(10px) brightness(0.6);z-index:-1;transition:0.3s;}
-body.light::before{filter:blur(10px) brightness(1);}
-.container{max-width:1000px;margin:auto;padding:20px;}
-.card{background:rgba(0,0,0,0.65);padding:20px;border-radius:16px;margin-bottom:20px;box-shadow:0 8px 20px rgba(0,0,0,0.3);}
-body.light .card{background:rgba(255,255,255,0.9);}
-input,button{width:100%;padding:10px;margin:8px 0;border:none;border-radius:10px;outline:none;}
-button{background:#00e5ff;font-weight:600;cursor:pointer;}
-button:hover{background:#00bcd4;color:#fff;}
-.logout{background:#ff5252;}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px;}
-.balance{font-size:28px;font-weight:600;color:#00e676;}
-.history{max-height:250px;overflow-y:auto;padding-right:5px;}
-.toggleTheme{position:fixed;top:15px;right:15px;width:38px;height:38px;border-radius:50%;font-size:16px;cursor:pointer;background:rgba(0,0,0,0.6);color:#fff;border:none;}
-body.light .toggleTheme{background:rgba(255,255,255,0.8);color:#000;}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:999;}
-.modal{width:320px;background:rgba(0,0,0,0.85);padding:20px;border-radius:16px;}
-body.light .modal{background:#fff;}
-.modal-close{text-align:right;cursor:pointer;font-weight:bold;}
-.hidden{display:none;}
-.history p{padding:8px;border-radius:8px;margin:4px 0;}
-</style>
-</head>
-<body class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Buntys Bank - Dashboard</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        font-family: Poppins, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        min-height: 100vh;
+        transition: 0.3s;
+        overflow-x: hidden;
+      }
+      body.dark {
+        color: #fff;
+      }
+      body.light {
+        color: #000;
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: url("https://images.unsplash.com/photo-1581091215364-6ee84e47ee8a?auto=format&fit=crop&w=1470&q=80")
+          center/cover no-repeat;
+        filter: blur(10px) brightness(0.6);
+        z-index: -1;
+        transition: 0.3s;
+      }
+      body.light::before {
+        filter: blur(10px) brightness(1);
+      }
+      .container {
+        max-width: 1000px;
+        margin: auto;
+        padding: 20px;
+      }
+      .card {
+        background: rgba(0, 0, 0, 0.65);
+        padding: 20px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      }
+      body.light .card {
+        background: rgba(255, 255, 255, 0.9);
+      }
+      input,
+      button {
+        width: 100%;
+        padding: 10px;
+        margin: 8px 0;
+        border: none;
+        border-radius: 10px;
+        outline: none;
+      }
+      button {
+        background: #00e5ff;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #00bcd4;
+        color: #fff;
+      }
+      .logout {
+        background: #ff5252;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 15px;
+      }
+      .balance {
+        font-size: 28px;
+        font-weight: 600;
+        color: #00e676;
+      }
+      .history {
+        max-height: 250px;
+        overflow-y: auto;
+        padding-right: 5px;
+      }
+      .toggleTheme {
+        position: fixed;
+        top: 15px;
+        right: 15px;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        font-size: 16px;
+        cursor: pointer;
+        background: rgba(0, 0, 0, 0.6);
+        color: #fff;
+        border: none;
+      }
+      body.light .toggleTheme {
+        background: rgba(255, 255, 255, 0.8);
+        color: #000;
+      }
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 999;
+      }
+      .modal {
+        width: 320px;
+        background: rgba(0, 0, 0, 0.85);
+        padding: 20px;
+        border-radius: 16px;
+      }
+      body.light .modal {
+        background: #fff;
+      }
+      .modal-close {
+        text-align: right;
+        cursor: pointer;
+        font-weight: bold;
+      }
+      .hidden {
+        display: none;
+      }
+      .history p {
+        padding: 8px;
+        border-radius: 8px;
+        margin: 4px 0;
+      }
+    </style>
+  </head>
+  <body class="dark">
+    <button class="toggleTheme" onclick="toggleTheme()" id="themeBtn">
+      🌙
+    </button>
 
-<button class="toggleTheme" onclick="toggleTheme()" id="themeBtn">🌙</button>
+    <div class="container">
+      <div class="card">
+        <h2>Welcome, <span id="userName"></span></h2>
+        <p>Total Balance</p>
+        <div class="balance">₹ <span id="balance">0</span></div>
+        <button onclick="openModal()">🔐 Change / Reset PIN</button>
+        <button class="logout" onclick="logout()">Logout</button>
+      </div>
 
-<div class="container">
-  <div class="card">
-    <h2>Welcome, <span id="userName"></span></h2>
-    <p>Total Balance</p>
-    <div class="balance">₹ <span id="balance">0</span></div>
-    <button onclick="openModal()">🔐 Change / Reset PIN</button>
-    <button class="logout" onclick="logout()">Logout</button>
-  </div>
+      <div class="grid">
+        <div class="card">
+          <h3>Deposit</h3>
+          <input type="number" id="depAmt" placeholder="Amount" />
+          <button onclick="deposit()">Deposit</button>
+        </div>
+        <div class="card">
+          <h3>Withdraw</h3>
+          <input type="number" id="withAmt" placeholder="Amount" />
+          <button onclick="withdraw()">Withdraw</button>
+        </div>
+        <div class="card">
+          <h3>Transfer</h3>
+          <input
+            type="text"
+            id="tphone"
+            placeholder="Receiver Phone"
+            maxlength="10"
+            inputmode="numeric"
+          />
+          <input type="number" id="tamt" placeholder="Amount" />
+          <button onclick="transfer()">Transfer</button>
+        </div>
+      </div>
 
-  <div class="grid">
-    <div class="card">
-      <h3>Deposit</h3>
-      <input type="number" id="depAmt" placeholder="Amount" />
-      <button onclick="deposit()">Deposit</button>
+      <div class="card">
+        <h3>Transaction History</h3>
+        <div class="history" id="history"></div>
+      </div>
     </div>
-    <div class="card">
-      <h3>Withdraw</h3>
-      <input type="number" id="withAmt" placeholder="Amount" />
-      <button onclick="withdraw()">Withdraw</button>
+
+    <div class="modal-overlay" id="pinModal">
+      <div class="modal">
+        <div class="modal-close" onclick="closeModal()">✖</div>
+        <h3>Change PIN</h3>
+        <input
+          type="password"
+          id="oldPin"
+          maxlength="4"
+          placeholder="Current PIN"
+        />
+        <input
+          type="password"
+          id="newPin"
+          maxlength="4"
+          placeholder="New PIN"
+        />
+        <input
+          type="password"
+          id="confirmPin"
+          maxlength="4"
+          placeholder="Confirm PIN"
+        />
+        <button onclick="changePin()">Update PIN</button>
+        <hr />
+        <h3>Forgot PIN</h3>
+        <input type="text" id="resetPhone" placeholder="Phone" maxlength="10" />
+        <button onclick="sendOTP()">Send OTP</button>
+        <div id="otpSection" class="hidden">
+          <input type="text" id="otpInput" placeholder="Enter OTP" />
+          <input
+            type="password"
+            id="newPinOTP"
+            maxlength="4"
+            placeholder="New PIN"
+          />
+          <input
+            type="password"
+            id="confirmPinOTP"
+            maxlength="4"
+            placeholder="Confirm PIN"
+          />
+          <button onclick="verifyOTP()">Reset PIN</button>
+        </div>
+      </div>
     </div>
-    <div class="card">
-      <h3>Transfer</h3>
-      <input type="text" id="tphone" placeholder="Receiver Phone" maxlength="10" inputmode="numeric"/>
-      <input type="number" id="tamt" placeholder="Amount" />
-      <button onclick="transfer()">Transfer</button>
-    </div>
-  </div>
 
-  <div class="card">
-    <h3>Transaction History</h3>
-    <div class="history" id="history"></div>
-  </div>
-</div>
+    <script>
+      let users = JSON.parse(localStorage.getItem("users")) || [];
+      let currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
-<div class="modal-overlay" id="pinModal">
-  <div class="modal">
-    <div class="modal-close" onclick="closeModal()">✖</div>
-    <h3>Change PIN</h3>
-    <input type="password" id="oldPin" maxlength="4" placeholder="Current PIN"/>
-    <input type="password" id="newPin" maxlength="4" placeholder="New PIN"/>
-    <input type="password" id="confirmPin" maxlength="4" placeholder="Confirm PIN"/>
-    <button onclick="changePin()">Update PIN</button>
-    <hr />
-    <h3>Forgot PIN</h3>
-    <input type="text" id="resetPhone" placeholder="Phone" maxlength="10"/>
-    <button onclick="sendOTP()">Send OTP</button>
-    <div id="otpSection" class="hidden">
-      <input type="text" id="otpInput" placeholder="Enter OTP"/>
-      <input type="password" id="newPinOTP" maxlength="4" placeholder="New PIN"/>
-      <input type="password" id="confirmPinOTP" maxlength="4" placeholder="Confirm PIN"/>
-      <button onclick="verifyOTP()">Reset PIN</button>
-    </div>
-  </div>
-</div>
+      // ✅ Redirect if not logged in
+      if (!currentUser) {
+        alert("You must login first!");
+        window.location.href = "login.html";
+      }
 
-<script>
-let users=JSON.parse(localStorage.getItem("users"))||[];
-let currentUser=JSON.parse(localStorage.getItem("currentUser"));
+      currentUser.history = currentUser.history || [];
+      currentUser.balance = currentUser.balance || 0;
 
-// ✅ Redirect if not logged in
-if(!currentUser){
-    alert("You must login first!");
-    window.location.href="login.html";
-}
+      const historyDiv = document.getElementById("history");
+      document.getElementById("userName").innerText = currentUser.name;
 
-currentUser.history=currentUser.history||[];
-currentUser.balance=currentUser.balance||0;
+      function saveUsers() {
+        users = users.map((u) =>
+          u.phone === currentUser.phone ? currentUser : u
+        );
+        localStorage.setItem("users", JSON.stringify(users));
+        localStorage.setItem("currentUser", JSON.stringify(currentUser));
+      }
 
-const historyDiv=document.getElementById("history");
-document.getElementById("userName").innerText=currentUser.name;
+      function updateUI() {
+        document.getElementById("balance").innerText = currentUser.balance;
+        historyDiv.innerHTML = "";
+        if (!currentUser.history.length) {
+          historyDiv.innerHTML = "<p>No transactions yet</p>";
+          return;
+        }
+        currentUser.history
+          .slice()
+          .reverse()
+          .forEach((h) => {
+            let p = document.createElement("p");
+            p.textContent = h;
+            if (h.includes("Deposited"))
+              p.style.borderLeft = "5px solid #00e676";
+            else if (h.includes("Withdrawn"))
+              p.style.borderLeft = "5px solid #ff5252";
+            else if (h.includes("Transferred"))
+              p.style.borderLeft = "5px solid #40c4ff";
+            else if (h.includes("Received"))
+              p.style.borderLeft = "5px solid #b388ff";
+            historyDiv.appendChild(p);
+          });
+      }
 
-function saveUsers(){
-  users = users.map(u => u.phone === currentUser.phone ? currentUser : u);
-  localStorage.setItem("users",JSON.stringify(users));
-  localStorage.setItem("currentUser",JSON.stringify(currentUser));
-}
+      // Transactions
+      function deposit() {
+        const amt = +document.getElementById("depAmt").value;
+        if (amt <= 0) return alert("Invalid amount");
+        currentUser.balance += amt;
+        currentUser.history.push(
+          `[${new Date().toLocaleString()}] Deposited ₹${amt}`
+        );
+        saveUsers();
+        updateUI();
+        document.getElementById("depAmt").value = "";
+      }
+      function withdraw() {
+        const amt = +document.getElementById("withAmt").value;
+        if (amt <= 0 || amt > currentUser.balance)
+          return alert("Invalid amount");
+        currentUser.balance -= amt;
+        currentUser.history.push(
+          `[${new Date().toLocaleString()}] Withdrawn ₹${amt}`
+        );
+        saveUsers();
+        updateUI();
+        document.getElementById("withAmt").value = "";
+      }
+      function transfer() {
+        const phone = document.getElementById("tphone").value;
+        const amt = +document.getElementById("tamt").value;
+        if (phone.length !== 10) return alert("Enter 10-digit phone");
+        const receiver = users.find((u) => u.phone === phone);
+        if (!receiver) return alert("Receiver not found");
+        if (amt <= 0 || amt > currentUser.balance)
+          return alert("Invalid amount");
+        currentUser.balance -= amt;
+        receiver.balance = receiver.balance || 0;
+        receiver.balance += amt;
+        currentUser.history.push(
+          `[${new Date().toLocaleString()}] Transferred ₹${amt} to ${
+            receiver.name
+          }`
+        );
+        receiver.history = receiver.history || [];
+        receiver.history.push(
+          `[${new Date().toLocaleString()}] Received ₹${amt} from ${
+            currentUser.name
+          }`
+        );
+        saveUsers();
+        updateUI();
+        document.getElementById("tphone").value = "";
+        document.getElementById("tamt").value = "";
+      }
 
-function updateUI(){
-  document.getElementById("balance").innerText=currentUser.balance;
-  historyDiv.innerHTML="";
-  if(!currentUser.history.length){
-    historyDiv.innerHTML="<p>No transactions yet</p>"; return;
-  }
-  currentUser.history.slice().reverse().forEach(h=>{
-    let p=document.createElement("p");
-    p.textContent=h;
-    if(h.includes("Deposited")) p.style.borderLeft="5px solid #00e676";
-    else if(h.includes("Withdrawn")) p.style.borderLeft="5px solid #ff5252";
-    else if(h.includes("Transferred")) p.style.borderLeft="5px solid #40c4ff";
-    else if(h.includes("Received")) p.style.borderLeft="5px solid #b388ff";
-    historyDiv.appendChild(p);
-  });
-}
+      // Theme
+      function toggleTheme() {
+        document.body.classList.toggle("dark");
+        document.body.classList.toggle("light");
+        document.getElementById("themeBtn").innerText =
+          document.body.classList.contains("dark") ? "🌙" : "☀️";
+      }
 
-// Transactions
-function deposit(){
-  const amt=+document.getElementById("depAmt").value;
-  if(amt<=0) return alert("Invalid amount");
-  currentUser.balance+=amt;
-  currentUser.history.push(`[${new Date().toLocaleString()}] Deposited ₹${amt}`);
-  saveUsers(); updateUI(); document.getElementById("depAmt").value="";
-}
-function withdraw(){
-  const amt=+document.getElementById("withAmt").value;
-  if(amt<=0||amt>currentUser.balance) return alert("Invalid amount");
-  currentUser.balance-=amt;
-  currentUser.history.push(`[${new Date().toLocaleString()}] Withdrawn ₹${amt}`);
-  saveUsers(); updateUI(); document.getElementById("withAmt").value="";
-}
-function transfer(){
-  const phone=document.getElementById("tphone").value;
-  const amt=+document.getElementById("tamt").value;
-  if(phone.length!==10) return alert("Enter 10-digit phone");
-  const receiver=users.find(u=>u.phone===phone);
-  if(!receiver) return alert("Receiver not found");
-  if(amt<=0||amt>currentUser.balance) return alert("Invalid amount");
-  currentUser.balance-=amt;
-  receiver.balance=receiver.balance||0;
-  receiver.balance+=amt;
-  currentUser.history.push(`[${new Date().toLocaleString()}] Transferred ₹${amt} to ${receiver.name}`);
-  receiver.history=receiver.history||[];
-  receiver.history.push(`[${new Date().toLocaleString()}] Received ₹${amt} from ${currentUser.name}`);
-  saveUsers(); updateUI();
-  document.getElementById("tphone").value=""; document.getElementById("tamt").value="";
-}
+      // PIN modal
+      function openModal() {
+        document.getElementById("pinModal").style.display = "flex";
+      }
+      function closeModal() {
+        document.getElementById("pinModal").style.display = "none";
+      }
+      function changePin() {
+        const oldPin = document.getElementById("oldPin").value;
+        const newPin = document.getElementById("newPin").value;
+        const confirmPin = document.getElementById("confirmPin").value;
+        if (oldPin !== currentUser.pin) return alert("Wrong PIN");
+        if (newPin !== confirmPin) return alert("PINs mismatch");
+        currentUser.pin = newPin;
+        saveUsers();
+        alert("PIN updated");
+        closeModal();
+      }
+      let otp = null,
+        otpUser = null;
+      function sendOTP() {
+        const phone = document.getElementById("resetPhone").value;
+        if (phone.length !== 10) return alert("Enter 10-digit phone");
+        otpUser = users.find((u) => u.phone === phone);
+        if (!otpUser) return alert("Phone not found");
+        otp = Math.floor(100000 + Math.random() * 900000);
+        alert("Your OTP: " + otp);
+        document.getElementById("otpSection").classList.remove("hidden");
+      }
+      function verifyOTP() {
+        const entered = document.getElementById("otpInput").value;
+        const newPin = document.getElementById("newPinOTP").value;
+        const confirmPin = document.getElementById("confirmPinOTP").value;
+        if (entered != otp) return alert("Wrong OTP");
+        if (newPin !== confirmPin) return alert("PINs mismatch");
+        otpUser.pin = newPin;
+        saveUsers();
+        alert("PIN reset");
+        closeModal();
+      }
 
-// Theme
-function toggleTheme(){
-  document.body.classList.toggle("dark");
-  document.body.classList.toggle("light");
-  document.getElementById("themeBtn").innerText=document.body.classList.contains("dark")?"🌙":"☀️";
-}
+      // Logout
+      // Logout function
+      function logout() {
+        localStorage.removeItem("currentUser");
+        // Use full relative path
+        window.location.href = "./index.html";
+      }
 
-// PIN modal
-function openModal(){document.getElementById("pinModal").style.display="flex";}
-function closeModal(){document.getElementById("pinModal").style.display="none";}
-function changePin(){
-  const oldPin=document.getElementById("oldPin").value;
-  const newPin=document.getElementById("newPin").value;
-  const confirmPin=document.getElementById("confirmPin").value;
-  if(oldPin!==currentUser.pin) return alert("Wrong PIN");
-  if(newPin!==confirmPin) return alert("PINs mismatch");
-  currentUser.pin=newPin; saveUsers(); alert("PIN updated"); closeModal();
-}
-let otp=null, otpUser=null;
-function sendOTP(){
-  const phone=document.getElementById("resetPhone").value;
-  if(phone.length!==10) return alert("Enter 10-digit phone");
-  otpUser=users.find(u=>u.phone===phone);
-  if(!otpUser) return alert("Phone not found");
-  otp=Math.floor(100000+Math.random()*900000);
-  alert("Your OTP: "+otp);
-  document.getElementById("otpSection").classList.remove("hidden");
-}
-function verifyOTP(){
-  const entered=document.getElementById("otpInput").value;
-  const newPin=document.getElementById("newPinOTP").value;
-  const confirmPin=document.getElementById("confirmPinOTP").value;
-  if(entered!=otp) return alert("Wrong OTP");
-  if(newPin!==confirmPin) return alert("PINs mismatch");
-  otpUser.pin=newPin; saveUsers(); alert("PIN reset"); closeModal();
-}
-
-// Logout
-// Logout function
-function logout(){
-  localStorage.removeItem("currentUser");
-  // Use full relative path
-  window.location.href="./index.html";
-}
-
-
-// Initialize UI
-updateUI();
-</script>
-
-</body>
+      // Initialize UI
+      updateUI();
+    </script>
+  </body>
 </html>
