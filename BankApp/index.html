@@ -60,7 +60,12 @@
   <body>
     <div class="card" id="loginCard">
       <h2>Login</h2>
-      <input type="text" id="lphone" placeholder="Phone Number" />
+      <input
+        type="text"
+        id="lphone"
+        placeholder="Phone Number"
+        maxlength="10"
+      />
       <input
         type="password"
         id="lpin"
@@ -79,7 +84,12 @@
     <div class="card" id="registerCard" style="display: none">
       <h2>Create Account</h2>
       <input type="text" id="rname" placeholder="Name" />
-      <input type="text" id="rphone" placeholder="Phone Number" />
+      <input
+        type="text"
+        id="rphone"
+        placeholder="Phone Number"
+        maxlength="10"
+      />
       <input
         type="password"
         id="rpin"
@@ -94,6 +104,10 @@
     </div>
 
     <script>
+      function isValidPhone(phone) {
+        return /^\d{10}$/.test(phone);
+      }
+
       let users = JSON.parse(localStorage.getItem("users")) || [];
 
       const loginCard = document.getElementById("loginCard");
@@ -119,40 +133,63 @@
         const name = document.getElementById("rname").value.trim();
         const phone = document.getElementById("rphone").value.trim();
         const pin = document.getElementById("rpin").value.trim();
+
         if (!name || !phone || !pin) {
           alert("Fill all fields");
           return;
         }
-        if (!isValidPin(pin)) {
-          alert("PIN must be 4 digits");
+
+        if (!isValidPhone(phone)) {
+          alert("Phone number must be exactly 10 digits");
           return;
         }
+
+        if (!isValidPin(pin)) {
+          alert("PIN must be exactly 4 digits");
+          return;
+        }
+
         if (users.some((u) => u.phone === phone)) {
           alert("Phone already registered");
           return;
         }
+
         users.push({ name, phone, pin, balance: 0, history: [] });
         saveUsers();
         alert("Account created! Please login.");
+
         document.getElementById("rname").value =
           document.getElementById("rphone").value =
           document.getElementById("rpin").value =
             "";
+
         showLogin();
       }
-
       function login() {
         const phone = document.getElementById("lphone").value.trim();
         const pin = document.getElementById("lpin").value.trim();
+
+        if (!isValidPhone(phone)) {
+          alert("Phone number must be exactly 10 digits");
+          return;
+        }
+
+        if (!isValidPin(pin)) {
+          alert("PIN must be exactly 4 digits");
+          return;
+        }
+
         const currentUser = users.find(
           (u) => u.phone === phone && u.pin === pin
         );
+
         if (!currentUser) {
           alert("Invalid phone or PIN");
           return;
         }
+
         localStorage.setItem("currentUser", JSON.stringify(currentUser));
-        window.location.href = "dashboard.html";
+        window.location.href = "./dashboard.html";
       }
     </script>
   </body>
