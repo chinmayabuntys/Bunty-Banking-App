@@ -131,9 +131,6 @@
         cursor: pointer;
         font-weight: bold;
       }
-      .hidden {
-        display: none;
-      }
       .history p {
         padding: 8px;
         border-radius: 8px;
@@ -145,7 +142,13 @@
         left: 50%;
         transform: translate(-50%, -50%);
         z-index: 1000;
-        display: none;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+      }
+      #popup.show {
+        opacity: 1;
+        pointer-events: auto;
       }
       .popup-message {
         background: rgba(0, 0, 0, 0.85);
@@ -155,6 +158,7 @@
         font-size: 18px;
         text-align: center;
         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        transition: 0.3s;
       }
       body.light .popup-message {
         background: #fff;
@@ -163,7 +167,7 @@
     </style>
   </head>
   <body class="dark">
-    <div id="popup" class="hidden">
+    <div id="popup">
       <div class="popup-message" id="popupMessage"></div>
     </div>
 
@@ -261,7 +265,6 @@
       let users = JSON.parse(localStorage.getItem("users")) || [];
       let currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
-      // ✅ Redirect if not logged in
       if (!currentUser) {
         alert("You must login first!");
         window.location.href = "login.html";
@@ -316,8 +319,8 @@
         );
         saveUsers();
         updateUI();
-        showPopup(`₹${amt} Deposited Successfully!`);
         document.getElementById("depAmt").value = "";
+        showPopup(`₹${amt} Deposited Successfully!`, "#00e676");
       }
 
       function withdraw() {
@@ -330,8 +333,8 @@
         );
         saveUsers();
         updateUI();
-        showPopup(`₹${amt} Withdrawn Successfully!`);
         document.getElementById("withAmt").value = "";
+        showPopup(`₹${amt} Withdrawn Successfully!`, "#ff5252");
       }
 
       function transfer() {
@@ -342,9 +345,11 @@
         if (!receiver) return alert("Receiver not found");
         if (amt <= 0 || amt > currentUser.balance)
           return alert("Invalid amount");
+
         currentUser.balance -= amt;
         receiver.balance = receiver.balance || 0;
         receiver.balance += amt;
+
         currentUser.history.push(
           `[${new Date().toLocaleString()}] Transferred ₹${amt} to ${
             receiver.name
@@ -356,11 +361,13 @@
             currentUser.name
           }`
         );
+
         saveUsers();
         updateUI();
-        showPopup(`₹${amt} Transferred to ${receiver.name}!`);
+
         document.getElementById("tphone").value = "";
         document.getElementById("tamt").value = "";
+        showPopup(`₹${amt} Transferred to ${receiver.name}!`, "#40c4ff");
       }
 
       // Theme
@@ -413,24 +420,24 @@
       }
 
       // Logout
-      // Logout function
       function logout() {
         localStorage.removeItem("currentUser");
-        // Use full relative path
         window.location.href = "./index.html";
       }
 
       // Initialize UI
       updateUI();
 
-      function showPopup(message) {
+      // Smooth Popup
+      function showPopup(message, color = "#00e676") {
         const popup = document.getElementById("popup");
         const popupMessage = document.getElementById("popupMessage");
         popupMessage.innerText = message;
-        popup.style.display = "block";
+        popupMessage.style.borderLeft = `8px solid ${color}`;
+        popup.classList.add("show");
         setTimeout(() => {
-          popup.style.display = "none";
-        }, 2000); // hides after 2 seconds
+          popup.classList.remove("show");
+        }, 2000);
       }
     </script>
   </body>
