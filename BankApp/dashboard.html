@@ -139,9 +139,34 @@
         border-radius: 8px;
         margin: 4px 0;
       }
+      #popup {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1000;
+        display: none;
+      }
+      .popup-message {
+        background: rgba(0, 0, 0, 0.85);
+        color: #fff;
+        padding: 20px 30px;
+        border-radius: 12px;
+        font-size: 18px;
+        text-align: center;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      }
+      body.light .popup-message {
+        background: #fff;
+        color: #000;
+      }
     </style>
   </head>
   <body class="dark">
+    <div id="popup" class="hidden">
+      <div class="popup-message" id="popupMessage"></div>
+    </div>
+
     <button class="toggleTheme" onclick="toggleTheme()" id="themeBtn">
       🌙
     </button>
@@ -291,8 +316,10 @@
         );
         saveUsers();
         updateUI();
+        showPopup(`₹${amt} Deposited Successfully!`);
         document.getElementById("depAmt").value = "";
       }
+
       function withdraw() {
         const amt = +document.getElementById("withAmt").value;
         if (amt <= 0 || amt > currentUser.balance)
@@ -303,8 +330,10 @@
         );
         saveUsers();
         updateUI();
+        showPopup(`₹${amt} Withdrawn Successfully!`);
         document.getElementById("withAmt").value = "";
       }
+
       function transfer() {
         const phone = document.getElementById("tphone").value;
         const amt = +document.getElementById("tamt").value;
@@ -329,6 +358,7 @@
         );
         saveUsers();
         updateUI();
+        showPopup(`₹${amt} Transferred to ${receiver.name}!`);
         document.getElementById("tphone").value = "";
         document.getElementById("tamt").value = "";
       }
@@ -392,6 +422,16 @@
 
       // Initialize UI
       updateUI();
+
+      function showPopup(message) {
+        const popup = document.getElementById("popup");
+        const popupMessage = document.getElementById("popupMessage");
+        popupMessage.innerText = message;
+        popup.style.display = "block";
+        setTimeout(() => {
+          popup.style.display = "none";
+        }, 2000); // hides after 2 seconds
+      }
     </script>
   </body>
 </html>
