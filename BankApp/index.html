@@ -16,43 +16,83 @@
         justify-content: center;
         align-items: center;
         min-height: 100vh;
-       
+        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
       }
+
       .card {
         background: rgba(0, 0, 0, 0.7);
-        padding: 30px;
+        padding: 30px 25px;
         border-radius: 16px;
         width: 320px;
         color: #fff;
         text-align: center;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
       }
+
       h2 {
         margin-bottom: 20px;
+        font-weight: 600;
       }
-      input,
-      button {
-        width: 100%;
-        padding: 12px;
-        margin: 8px 0;
+
+      /* INPUT FIELDS (RESIZED & CENTERED) */
+      input {
+        width: 90%;
+        padding: 10px 12px;
+        margin: 8px auto;
         border-radius: 10px;
         border: none;
         outline: none;
+        font-size: 14px;
+        display: block;
       }
+
+      /* BUTTONS */
       button {
+        width: 100%;
+        padding: 10px;
+        margin-top: 12px;
+        border-radius: 12px;
+        border: none;
         background: #00e5ff;
         font-weight: 600;
+        font-size: 15px;
         cursor: pointer;
+        transition: all 0.3s ease;
       }
+
       button:hover {
         background: #00bcd4;
         color: #fff;
       }
+
+      /* TOGGLE LOGIN / REGISTER LINK */
       .toggleForm {
         background: none;
         border: none;
         color: #00e5ff;
         cursor: pointer;
         text-decoration: underline;
+        padding: 0;
+        font-size: 14px;
+        width: auto;
+      }
+
+      /* PARAGRAPH TEXT */
+      p {
+        margin-top: 15px;
+        font-size: 14px;
+      }
+
+      /* MOBILE RESPONSIVE */
+      @media (max-width: 480px) {
+        .card {
+          width: 90%;
+          padding: 25px 20px;
+        }
+
+        input {
+          width: 95%;
+        }
       }
     </style>
   </head>
