@@ -139,8 +139,44 @@
         border-radius: 8px;
         margin: 4px 0;
       }
+      /* Toast Notification */
+      .toast {
+        position: fixed;
+        bottom: 25px;
+        right: 25px;
+        background: rgba(0, 0, 0, 0.85);
+        color: #fff;
+        padding: 14px 20px;
+        border-radius: 12px;
+        font-weight: 500;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.4s ease;
+        z-index: 2000;
+      }
+
+      .toast.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .toast.success {
+        border-left: 5px solid #00e676;
+      }
+
+      .toast.error {
+        border-left: 5px solid #ff5252;
+      }
+
+      body.light .toast {
+        background: #fff;
+        color: #000;
+      }
     </style>
   </head>
+  <div id="toast" class="toast"></div>
+
   <body class="dark">
     <button class="toggleTheme" onclick="toggleTheme()" id="themeBtn">
       🌙
@@ -284,7 +320,8 @@
       // Transactions
       function deposit() {
         const amt = +document.getElementById("depAmt").value;
-        if (amt <= 0) return alert("Invalid amount");
+        if (amt <= 0) return showToast("Invalid deposit amount", "error");
+
         currentUser.balance += amt;
         currentUser.history.push(
           `[${new Date().toLocaleString()}] Deposited ₹${amt}`
@@ -292,11 +329,15 @@
         saveUsers();
         updateUI();
         document.getElementById("depAmt").value = "";
+
+        showToast(`₹${amt} deposited successfully`);
       }
+
       function withdraw() {
         const amt = +document.getElementById("withAmt").value;
         if (amt <= 0 || amt > currentUser.balance)
-          return alert("Invalid amount");
+          return showToast("Invalid withdrawal amount", "error");
+
         currentUser.balance -= amt;
         currentUser.history.push(
           `[${new Date().toLocaleString()}] Withdrawn ₹${amt}`
@@ -304,18 +345,26 @@
         saveUsers();
         updateUI();
         document.getElementById("withAmt").value = "";
+
+        showToast(`₹${amt} withdrawn successfully`);
       }
+
       function transfer() {
         const phone = document.getElementById("tphone").value;
         const amt = +document.getElementById("tamt").value;
-        if (phone.length !== 10) return alert("Enter 10-digit phone");
+
+        if (phone.length !== 10)
+          return showToast("Enter valid 10-digit phone", "error");
+
         const receiver = users.find((u) => u.phone === phone);
-        if (!receiver) return alert("Receiver not found");
+        if (!receiver) return showToast("Receiver not found", "error");
+
         if (amt <= 0 || amt > currentUser.balance)
-          return alert("Invalid amount");
+          return showToast("Invalid transfer amount", "error");
+
         currentUser.balance -= amt;
-        receiver.balance = receiver.balance || 0;
-        receiver.balance += amt;
+        receiver.balance = (receiver.balance || 0) + amt;
+
         currentUser.history.push(
           `[${new Date().toLocaleString()}] Transferred ₹${amt} to ${
             receiver.name
@@ -327,10 +376,14 @@
             currentUser.name
           }`
         );
+
         saveUsers();
         updateUI();
+
         document.getElementById("tphone").value = "";
         document.getElementById("tamt").value = "";
+
+        showToast(`₹${amt} transferred to ${receiver.name}`);
       }
 
       // Theme
@@ -392,6 +445,16 @@
 
       // Initialize UI
       updateUI();
+
+      function showToast(message, type = "success") {
+        const toast = document.getElementById("toast");
+        toast.textContent = message;
+        toast.className = `toast show ${type}`;
+
+        setTimeout(() => {
+          toast.classList.remove("show");
+        }, 3000);
+      }
     </script>
   </body>
 </html>
