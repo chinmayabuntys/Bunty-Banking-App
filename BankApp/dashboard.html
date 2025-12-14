@@ -139,90 +139,9 @@
         border-radius: 8px;
         margin: 4px 0;
       }
-
-      /* Center Popup */
-      .center-popup {
-        position: fixed;
-        inset: 0;
-        display: none;
-        align-items: center;
-        justify-content: center;
-        background: rgba(0, 0, 0, 0.6);
-        backdrop-filter: blur(4px);
-        z-index: 99999; /* 🔥 VERY IMPORTANT */
-      }
-
-      .center-popup-box {
-        width: 320px;
-        background: rgba(0, 0, 0, 0.85);
-        padding: 25px;
-        border-radius: 18px;
-        text-align: center;
-        animation: scaleIn 0.35s ease forwards;
-      }
-
-      body.light .center-popup-box {
-        background: #fff;
-        color: #000;
-      }
-
-      .center-popup-icon {
-        font-size: 48px;
-        margin-bottom: 10px;
-        animation: pop 0.5s ease;
-      }
-
-      .center-popup-msg {
-        font-size: 16px;
-        font-weight: 500;
-      }
-
-      @keyframes scaleIn {
-        from {
-          transform: scale(0.8);
-          opacity: 0;
-        }
-        to {
-          transform: scale(1);
-          opacity: 1;
-        }
-      }
-
-      @keyframes pop {
-        0% {
-          transform: scale(0);
-        }
-        70% {
-          transform: scale(1.2);
-        }
-        100% {
-          transform: scale(1);
-        }
-      }
-      body {
-        min-height: 100vh;
-        transition: 0.3s;
-        overflow-x: hidden;
-        position: relative; /* 🔥 ADD THIS */
-      }
     </style>
   </head>
-
-  <!-- //body starts -->
-
   <body class="dark">
-    <audio id="successSound">
-      <source
-        src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3"
-      />
-    </audio>
-
-    <div class="center-popup" id="centerPopup">
-      <div class="center-popup-box">
-        <div class="center-popup-icon" id="popupIcon">✅</div>
-        <div class="center-popup-msg" id="popupMessage"></div>
-      </div>
-    </div>
     <button class="toggleTheme" onclick="toggleTheme()" id="themeBtn">
       🌙
     </button>
@@ -365,8 +284,7 @@
       // Transactions
       function deposit() {
         const amt = +document.getElementById("depAmt").value;
-        if (amt <= 0) return showCenterPopup("Invalid deposit amount", false);
-
+        if (amt <= 0) return alert("Invalid amount");
         currentUser.balance += amt;
         currentUser.history.push(
           `[${new Date().toLocaleString()}] Deposited ₹${amt}`
@@ -374,16 +292,11 @@
         saveUsers();
         updateUI();
         document.getElementById("depAmt").value = "";
-        
-
-        showCenterPopup(`₹${amt} Deposited Successfully`);
       }
-
       function withdraw() {
         const amt = +document.getElementById("withAmt").value;
         if (amt <= 0 || amt > currentUser.balance)
-          return showCenterPopup("Invalid withdrawal amount", false);
-
+          return alert("Invalid amount");
         currentUser.balance -= amt;
         currentUser.history.push(
           `[${new Date().toLocaleString()}] Withdrawn ₹${amt}`
@@ -391,26 +304,18 @@
         saveUsers();
         updateUI();
         document.getElementById("withAmt").value = "";
-
-        showCenterPopup(`₹${amt} Withdrawn Successfully`);
       }
-
       function transfer() {
         const phone = document.getElementById("tphone").value;
         const amt = +document.getElementById("tamt").value;
-
-        if (phone.length !== 10)
-          return showCenterPopup("Enter valid phone number", false);
-
+        if (phone.length !== 10) return alert("Enter 10-digit phone");
         const receiver = users.find((u) => u.phone === phone);
-        if (!receiver) return showCenterPopup("Receiver not found", false);
-
+        if (!receiver) return alert("Receiver not found");
         if (amt <= 0 || amt > currentUser.balance)
-          return showCenterPopup("Invalid transfer amount", false);
-
+          return alert("Invalid amount");
         currentUser.balance -= amt;
-        receiver.balance = (receiver.balance || 0) + amt;
-
+        receiver.balance = receiver.balance || 0;
+        receiver.balance += amt;
         currentUser.history.push(
           `[${new Date().toLocaleString()}] Transferred ₹${amt} to ${
             receiver.name
@@ -422,14 +327,10 @@
             currentUser.name
           }`
         );
-
         saveUsers();
         updateUI();
-
         document.getElementById("tphone").value = "";
         document.getElementById("tamt").value = "";
-
-        showCenterPopup(`₹${amt} Sent to ${receiver.name}`);
       }
 
       // Theme
@@ -491,38 +392,6 @@
 
       // Initialize UI
       updateUI();
-
-      function showCenterPopup(message, success = true) {
-        const popup = document.getElementById("centerPopup");
-        const msg = document.getElementById("popupMessage");
-        const icon = document.getElementById("popupIcon");
-        const sound = document.getElementById("successSound");
-
-        if (!popup) {
-          console.error("Popup element not found");
-          return;
-        }
-
-        msg.innerText = message;
-        icon.innerText = success ? "✅" : "❌";
-
-        popup.style.display = "flex";
-
-        if (success && sound) {
-          try {
-            sound.currentTime = 0;
-            sound.play().catch(() => {
-              console.warn("Sound autoplay blocked");
-            });
-          } catch (e) {
-            console.warn("Audio error", e);
-          }
-        }
-
-        setTimeout(() => {
-          popup.style.display = "none";
-        }, 2200);
-      }
     </script>
   </body>
 </html>
