@@ -139,42 +139,9 @@
         border-radius: 8px;
         margin: 4px 0;
       }
-      /* Toast Notification */
-      .toast {
-        position: fixed;
-        bottom: 25px;
-        right: 25px;
-        background: rgba(0, 0, 0, 0.85);
-        color: #fff;
-        padding: 14px 20px;
-        border-radius: 12px;
-        font-weight: 500;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-        opacity: 0;
-        transform: translateY(20px);
-        transition: all 0.4s ease;
-        z-index: 2000;
-      }
 
-      .toast.show {
-        opacity: 1;
-        transform: translateY(0);
-      }
-
-      .toast.success {
-        border-left: 5px solid #00e676;
-      }
-
-      .toast.error {
-        border-left: 5px solid #ff5252;
-      }
-
-      body.light .toast {
-        background: #fff;
-        color: #000;
-      }
       /* Center Popup */
-      .popup {
+      .center-popup {
         position: fixed;
         inset: 0;
         display: none;
@@ -182,34 +149,30 @@
         justify-content: center;
         background: rgba(0, 0, 0, 0.6);
         backdrop-filter: blur(4px);
-        z-index: 3000;
+        z-index: 99999; /* 🔥 VERY IMPORTANT */
       }
 
-      .popup-box {
-        width: 300px;
+      .center-popup-box {
+        width: 320px;
         background: rgba(0, 0, 0, 0.85);
         padding: 25px;
         border-radius: 18px;
         text-align: center;
-        animation: scaleIn 0.4s ease;
+        animation: scaleIn 0.35s ease forwards;
       }
 
-      body.light .popup-box {
+      body.light .center-popup-box {
         background: #fff;
         color: #000;
       }
 
-      .popup-box.success {
-        border-top: 5px solid #00e676;
-      }
-
-      .popup-icon {
-        font-size: 50px;
+      .center-popup-icon {
+        font-size: 48px;
         margin-bottom: 10px;
-        animation: pop 0.6s ease;
+        animation: pop 0.5s ease;
       }
 
-      .popup-msg {
+      .center-popup-msg {
         font-size: 16px;
         font-weight: 500;
       }
@@ -236,26 +199,30 @@
           transform: scale(1);
         }
       }
+      body {
+        min-height: 100vh;
+        transition: 0.3s;
+        overflow-x: hidden;
+        position: relative; /* 🔥 ADD THIS */
+      }
     </style>
   </head>
-  <div id="toast" class="toast"></div>
-  <!-- Sound -->
-  <audio id="successSound">
-    <source
-      src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3"
-      type="audio/mpeg"
-    />
-  </audio>
 
-  <!-- Popup -->
-  <div class="popup" id="popup">
-    <div class="popup-box success">
-      <div class="popup-icon">✅</div>
-      <div class="popup-msg" id="popupMsg"></div>
-    </div>
-  </div>
   <!-- //body starts -->
+
   <body class="dark">
+    <audio id="successSound">
+      <source
+        src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3"
+      />
+    </audio>
+
+    <div class="center-popup" id="centerPopup">
+      <div class="center-popup-box">
+        <div class="center-popup-icon" id="popupIcon">✅</div>
+        <div class="center-popup-msg" id="popupMessage"></div>
+      </div>
+    </div>
     <button class="toggleTheme" onclick="toggleTheme()" id="themeBtn">
       🌙
     </button>
@@ -398,7 +365,7 @@
       // Transactions
       function deposit() {
         const amt = +document.getElementById("depAmt").value;
-        if (amt <= 0) return showToast("Invalid deposit amount", "error");
+        if (amt <= 0) return showCenterPopup("Invalid deposit amount", false);
 
         currentUser.balance += amt;
         currentUser.history.push(
@@ -407,16 +374,15 @@
         saveUsers();
         updateUI();
         document.getElementById("depAmt").value = "";
+        
 
-        showToast(`₹${amt} deposited successfully`);
-        showPopup(`₹${amt} Deposited Successfully`);
-
+        showCenterPopup(`₹${amt} Deposited Successfully`);
       }
 
       function withdraw() {
         const amt = +document.getElementById("withAmt").value;
         if (amt <= 0 || amt > currentUser.balance)
-          return showToast("Invalid withdrawal amount", "error");
+          return showCenterPopup("Invalid withdrawal amount", false);
 
         currentUser.balance -= amt;
         currentUser.history.push(
@@ -426,9 +392,7 @@
         updateUI();
         document.getElementById("withAmt").value = "";
 
-        showToast(`₹${amt} withdrawn successfully`);
-        showPopup(`₹${amt} Withdrawn Successfully`);
-
+        showCenterPopup(`₹${amt} Withdrawn Successfully`);
       }
 
       function transfer() {
@@ -436,13 +400,13 @@
         const amt = +document.getElementById("tamt").value;
 
         if (phone.length !== 10)
-          return showToast("Enter valid 10-digit phone", "error");
+          return showCenterPopup("Enter valid phone number", false);
 
         const receiver = users.find((u) => u.phone === phone);
-        if (!receiver) return showToast("Receiver not found", "error");
+        if (!receiver) return showCenterPopup("Receiver not found", false);
 
         if (amt <= 0 || amt > currentUser.balance)
-          return showToast("Invalid transfer amount", "error");
+          return showCenterPopup("Invalid transfer amount", false);
 
         currentUser.balance -= amt;
         receiver.balance = (receiver.balance || 0) + amt;
@@ -465,9 +429,7 @@
         document.getElementById("tphone").value = "";
         document.getElementById("tamt").value = "";
 
-        showToast(`₹${amt} transferred to ${receiver.name}`);
-        showPopup(`₹${amt} Sent to ${receiver.name}`);
-
+        showCenterPopup(`₹${amt} Sent to ${receiver.name}`);
       }
 
       // Theme
@@ -530,25 +492,32 @@
       // Initialize UI
       updateUI();
 
-      function showToast(message, type = "success") {
-        const toast = document.getElementById("toast");
-        toast.textContent = message;
-        toast.className = `toast show ${type}`;
-
-        setTimeout(() => {
-          toast.classList.remove("show");
-        }, 3000);
-      }
-      function showPopup(message) {
-        const popup = document.getElementById("popup");
-        const msg = document.getElementById("popupMsg");
+      function showCenterPopup(message, success = true) {
+        const popup = document.getElementById("centerPopup");
+        const msg = document.getElementById("popupMessage");
+        const icon = document.getElementById("popupIcon");
         const sound = document.getElementById("successSound");
 
+        if (!popup) {
+          console.error("Popup element not found");
+          return;
+        }
+
         msg.innerText = message;
+        icon.innerText = success ? "✅" : "❌";
+
         popup.style.display = "flex";
 
-        sound.currentTime = 0;
-        sound.play();
+        if (success && sound) {
+          try {
+            sound.currentTime = 0;
+            sound.play().catch(() => {
+              console.warn("Sound autoplay blocked");
+            });
+          } catch (e) {
+            console.warn("Audio error", e);
+          }
+        }
 
         setTimeout(() => {
           popup.style.display = "none";
